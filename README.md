@@ -1,4 +1,4 @@
-Elasticsearch-HBase-River
+Elasticsearch-HBase-River / Async 1.6 and Elasticsearch 1.4.2
 ==========================
 
 An import river similar to the elasticsearch mysql river
