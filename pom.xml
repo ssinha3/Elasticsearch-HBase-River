@@ -12,8 +12,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<elasticsearch.version>0.20.5</elasticsearch.version>
-		<hbase.async.version>1.4.1</hbase.async.version>
+		<elasticsearch.version>1.4.2</elasticsearch.version>
+		<hbase.async.version>1.6.0</hbase.async.version>
 
 		<version.testng>6.8</version.testng>
 		<version.jmockit>0.999.19</version.jmockit>
