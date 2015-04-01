@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 import java.security.InvalidParameterException;
 import java.util.Map;
 
-import org.elasticsearch.ElasticSearchException;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.ExceptionsHelper;
 import org.elasticsearch.action.admin.indices.status.ShardStatus;
 import org.elasticsearch.client.Client;
@@ -238,7 +238,7 @@ public class HBaseRiver extends AbstractRiverComponent implements River, Uncaugh
 			if (ExceptionsHelper.unwrapCause(e) instanceof IndexAlreadyExistsException) {
 				this.logger.debug("Not creating Index {} as it already exists", this.index);
 			}
-			else if (ExceptionsHelper.unwrapCause(e) instanceof ElasticSearchException) {
+			else if (ExceptionsHelper.unwrapCause(e) instanceof ElasticsearchException) {
 				this.logger.debug("Mapping {}.{} already exists and will not be created", this.index, this.type);
 			}
 			else {
@@ -256,7 +256,7 @@ public class HBaseRiver extends AbstractRiverComponent implements River, Uncaugh
 				.setIgnoreConflicts(true)
 				.execute()
 				.actionGet();
-		} catch (ElasticSearchException e) {
+		} catch (ElasticsearchException e) {
 			this.logger.debug("Mapping already exists for index {} and type {}", this.index, this.type);
 		}
 
@@ -266,7 +266,7 @@ public class HBaseRiver extends AbstractRiverComponent implements River, Uncaugh
 	}
 
 	private void waitForESReady() {
-		if (!this.esClient.admin().indices().prepareExists(this.index).execute().actionGet().exists()) {
+		if (!this.esClient.admin().indices().prepareExists(this.index).execute().actionGet().isExists()) {
 			return;
 		}
 		for (final ShardStatus status : this.esClient.admin().indices().prepareStatus(this.index).execute().actionGet().getShards()) {
