@@ -106,6 +106,12 @@ class HBaseParser implements Runnable {
 					this.logger.info("Stopping HBase import in the midle of it");
 					break;
 				}
+				this.logger.info("rows size: " + rows.size());
+				for (ArrayList<KeyValue> list : rows) {
+					for (KeyValue kv : list) {
+						this.logger.info("Retrieving " + kv.toString());
+					}
+				}
 				parseBulkOfRows(rows);
 			}
 		} finally {
@@ -161,12 +167,12 @@ class HBaseParser implements Runnable {
 		}
 		final BulkResponse response = bulkRequest.execute().actionGet();
 
-		this.indexCounter += response.items().length;
+		this.indexCounter += response.getItems().length;
 		this.logger.info("HBase river has indexed {} entries so far", this.indexCounter);
 		final List<byte[]> failedKeys = new ArrayList<byte[]>();
 		if (response.hasFailures()) {
-			for (BulkItemResponse r : response.items()) {
-				if (r.failed()) {
+			for (BulkItemResponse r : response.getItems()) {
+				if (r.isFailed()) {
 					failedKeys.add(keyMapForDeletion.remove(r.getId()));
 				}
 			}
@@ -265,9 +271,9 @@ class HBaseParser implements Runnable {
 			.execute()
 			.actionGet();
 
-		if (response.facets().facet(TIMESTMAP_STATS) != null) {
+		if (response.getFacets().facet(TIMESTMAP_STATS) != null) {
 			this.logger.debug("Got statistical data from ElasticSearch about data timestamps");
-			final StatisticalFacet facet = (StatisticalFacet) response.facets().facet(TIMESTMAP_STATS);
+			final StatisticalFacet facet = (StatisticalFacet) response.getFacets().facet(TIMESTMAP_STATS);
 			final long timestamp = (long) Math.max(facet.getMax() + 1, 0);
 			scanner.setMinTimestamp(timestamp);
 			this.logger.debug("Found latest timestamp in ElasticSearch to be {}", timestamp);
