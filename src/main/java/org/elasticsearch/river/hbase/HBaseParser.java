@@ -82,7 +82,7 @@ class HBaseParser implements Runnable {
 	protected void parse() throws InterruptedException, Exception {
 		this.logger.info("Parsing data from HBase");
 		try {
-			this.client = new HBaseClient(this.river.getHosts());
+			this.client = new HBaseClient(this.river.getHosts() + ":5181");
 			this.logger.debug("Checking if table {} actually exists in HBase DB", this.river.getTable());
 			this.client.ensureTableExists(this.river.getTable()).addErrback(this.cbLogger);
 			this.logger.debug("Fetching HBase Scanner");
